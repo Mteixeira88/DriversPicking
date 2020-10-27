@@ -27,14 +27,12 @@ class MapViewModel: NSObject {
         super.init()
         self.locationDelegate = locationDelegate
         self.manager = manager
-        checkLocationPermissions()
+        self.manager?.delegate = self
+        self.manager?.desiredAccuracy = .greatestFiniteMagnitude
     }
     
     // MARK: - Setup
     private func checkLocationPermissions() {
-        manager?.delegate = self
-        manager?.desiredAccuracy = .greatestFiniteMagnitude
-        
         switch manager?.authorizationStatus {
         case .restricted, .denied, .notDetermined:
             manager?.requestWhenInUseAuthorization()
@@ -47,7 +45,7 @@ class MapViewModel: NSObject {
                 .interval(RxTimeInterval.seconds(5), scheduler: MainScheduler.instance)
                 .subscribe { [weak self ]_ in
                     self?.updateDriver()
-                    self?.timerObs?.dispose()
+//                    self?.timerObs?.dispose()
                 }
         }
     }
@@ -59,9 +57,11 @@ class MapViewModel: NSObject {
         
         var drivers = [DriverModel]()
         
-        for n in 0...5 {
+        for n in 0...6 {
+            print(n)
             let driverLocation = currentLocation.generateRandomCoordinate(random: n)
             let driver = DriverModel()
+            driver.title = "driver \(n)"
             driver.coordinate = driverLocation
             drivers.append(driver)
         }
@@ -70,12 +70,12 @@ class MapViewModel: NSObject {
     }
     
     private func updateDriver() {
-        var newDrivers = [DriverModel]()
-        privateDriver.enumerated().forEach { (index, driver) in
-            driver.coordinate = driver.coordinate.generateRandomCoordinate(random: 3)
-            newDrivers.append(driver)
+        guard let currentLocation = manager?.location?.coordinate else {
+            return
         }
-        privateDriver = newDrivers
+        privateDriver.enumerated().forEach { (index, driver) in
+            driver.coordinate = currentLocation.generateRandomCoordinate(random: index)
+        }
         drivers.onNext(privateDriver)
     }
 }

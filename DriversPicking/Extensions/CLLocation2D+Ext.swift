@@ -5,7 +5,7 @@ extension CLLocationCoordinate2D {
     func generateRandomCoordinate(random: Int) -> CLLocationCoordinate2D {
         let meterCord = 0.00900900900901 / 1000
         
-        let randomMeters = Int.random(in: 300...1000)
+        let randomMeters = Int.random(in: 100...300)
         
         let metersCordN = meterCord * Double(randomMeters)
         
@@ -15,9 +15,9 @@ extension CLLocationCoordinate2D {
         case 1:
             return CLLocationCoordinate2D(latitude: latitude - metersCordN, longitude: longitude - metersCordN)
         case 2:
-            return CLLocationCoordinate2D(latitude: latitude * metersCordN, longitude: longitude - metersCordN)
+            return CLLocationCoordinate2D(latitude: latitude + metersCordN, longitude: longitude - metersCordN)
         case 3:
-            return CLLocationCoordinate2D(latitude: latitude, longitude: longitude * metersCordN)
+            return CLLocationCoordinate2D(latitude: latitude, longitude: longitude + metersCordN)
         case 4:
             return CLLocationCoordinate2D(latitude: latitude, longitude: longitude - metersCordN)
         default:

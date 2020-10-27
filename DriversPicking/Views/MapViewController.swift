@@ -54,14 +54,7 @@ class MapViewController: UIViewController {
     
     private func setCurrentLocation(with currentLocation: CLLocationCoordinate2D) {
         self.currentLocation = currentLocation
-
-        let region = MKCoordinateRegion(
-            center: currentLocation,
-            latitudinalMeters: 1000,
-            longitudinalMeters: 1000
-        )
-        
-        mapView.setRegion(region, animated: true)
+        mapView.setRegion(getRegion(from: currentLocation), animated: true)
         
         let mkAnnotation: MKPointAnnotation = MKPointAnnotation()
         mkAnnotation.coordinate = currentLocation
@@ -86,8 +79,15 @@ class MapViewController: UIViewController {
                 self.mapView.removeAnnotation(annotation)
             }
         })
-        
         mapView.addAnnotation(driverLocation)
+    }
+    
+    private func getRegion(from currentLocation: CLLocationCoordinate2D) -> MKCoordinateRegion {
+        return MKCoordinateRegion(
+            center: currentLocation,
+            latitudinalMeters: 1000,
+            longitudinalMeters: 1000
+        )
     }
 }
 
@@ -103,18 +103,13 @@ extension MapViewController: MapViewModelProtocol {
 
 // MARK: - MKMapViewDelegate
 extension MapViewController: MKMapViewDelegate {
-//    func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
-//        guard let currentLocation = currentLocation else {
-//            return
-//        }
-//        let region = MKCoordinateRegion(
-//            center: currentLocation,
-//            latitudinalMeters: 1000,
-//            longitudinalMeters: 1000
-//        )
-//        
-//        mapView.setRegion(region, animated: true)
-//    }
+    func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+        guard let currentLocation = currentLocation else {
+            return
+        }
+        
+        mapView.setRegion(getRegion(from: currentLocation), animated: true)
+    }
     
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
