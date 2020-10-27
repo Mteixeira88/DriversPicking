@@ -1,0 +1,6 @@
+framework module Pods_DriversPicking {
+  umbrella header "Pods-DriversPicking-umbrella.h"
+
+  export *
+  module * { export * }
+}
