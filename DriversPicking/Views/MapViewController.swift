@@ -65,19 +65,31 @@ class MapViewController: UIViewController {
                 drivers.forEach { (driver) in
                     self.setLocation(on: driver)
                 }
+            }, onError: { error in
+                print(error)
+            })
+            .disposed(by: disposeBag)
+        
+        viewModel?
+            .pickedDriver
+            .observeOn(MainScheduler.instance)
+            .subscribe(onNext: { driver in
+                if let driver = driver {
+                    print(driver)
+                }
             })
             .disposed(by: disposeBag)
     }
             
     private func setLocation(on driverLocation: DriverViewModel) {
         mapView.annotations.forEach({ annotation in
-            if let annotation = annotation as? DriverAnnotation,
+            if var annotation = annotation as? DriverAnnotation,
                annotation.id == driverLocation.annotation.id {
-                self.mapView.removeAnnotation(annotation)
+                annotation = driverLocation.annotation
+            } else {
+                mapView.addAnnotation(driverLocation.annotation)
             }
         })
-        
-        mapView.addAnnotation(driverLocation.annotation)
     }
     
     private func getRegion(from currentLocation: CLLocationCoordinate2D) -> MKCoordinateRegion {
@@ -108,10 +120,10 @@ extension MapViewController: MKMapViewDelegate {
             mapView.removeAnnotation(selectedAnnotation)
             mapView.addAnnotation(selectedAnnotation)
             self.selectedAnnotation = selectedAnnotation.id == ann.id ?  nil : ann
-            
         } else {
             self.selectedAnnotation = ann
         }
+        viewModel?.pickDriver(with: selectedAnnotation)
         
         mapView.removeAnnotation(ann)
         mapView.addAnnotation(ann)
@@ -121,19 +133,25 @@ extension MapViewController: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         var pinView: MKAnnotationView?
         if annotation.coordinate == currentLocationAnnotation.coordinate {
-            pinView = MKAnnotationView(annotation: annotation, reuseIdentifier: PinIdent.user.rawValue);
+            pinView = MKAnnotationView(
+                annotation: annotation,
+                reuseIdentifier: PinIdent.user.rawValue
+            )
             pinView?.image = Assets.image(.locationPin)
         } else {
             if let ann = annotation as? DriverAnnotation {
                 if let selectedAnnotation = selectedAnnotation,
                     ann.id == selectedAnnotation.id {
-                    pinView = MKAnnotationView(annotation: annotation, reuseIdentifier: PinIdent.driverSelected.rawValue);
+                    pinView = MKAnnotationView(
+                        annotation: annotation,
+                        reuseIdentifier: PinIdent.driverSelected.rawValue
+                    )
                     pinView?.image = Assets.image(.sportCarSelected)
                 } else {
                     pinView = MKAnnotationView(
                         annotation: annotation,
                         reuseIdentifier: PinIdent.driver.rawValue
-                    );
+                    )
                     pinView?.image = Assets.image(.sportCar)
                 }
             }

@@ -14,8 +14,7 @@ class AppCoordinator {
     
     func start() {
         let rootViewController = MapViewController()
-        let navigationController = UINavigationController(rootViewController: rootViewController)
-        window.rootViewController = navigationController
+        window.rootViewController = rootViewController
         window.makeKeyAndVisible()
     }
 }

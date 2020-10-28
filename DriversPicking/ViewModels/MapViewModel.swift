@@ -15,14 +15,12 @@ class MapViewModel: NSObject {
     private(set) var manager: CLLocationManager?
     private(set) var delegate: CLLocationManagerDelegate?
     private let disposeBag = DisposeBag()
-    private var timerObs: Disposable?
-    
-    
-    var drivers = BehaviorSubject(value: [DriverViewModel]())
-    
     private let driverService: DriverServiceProtocol
     
-    private var privateDriver = [DriverViewModel]()
+    // MARK: - Subjects
+    var drivers = BehaviorSubject(value: [DriverViewModel]())
+    var pickedDriver: BehaviorSubject<DriverViewModel?> = BehaviorSubject(value: nil)
+
     
     // MARK: - Init
     init(
@@ -71,7 +69,6 @@ class MapViewModel: NSObject {
                     return
                 }
                 
-                self.privateDriver = drivers
                 self.drivers.onNext(drivers)
                 
                 Observable<Int>
@@ -90,10 +87,27 @@ class MapViewModel: NSObject {
         guard let currentLocation = manager?.location?.coordinate else {
             return
         }
-        privateDriver.enumerated().forEach { (index, driver) in
-            driver.annotation.coordinate = currentLocation.generateRandomCoordinate()
+        do {
+            try drivers.value().enumerated().forEach { (index, driver) in
+                driver.annotation.coordinate = currentLocation.generateRandomCoordinate()
+            }
+        } catch {
+            drivers.onError(error)
         }
-        drivers.onNext(privateDriver)
+    }
+    
+    func pickDriver(with annotation: DriverAnnotation?) {
+        guard let annotation = annotation else {
+            pickedDriver.onNext(nil)
+            return
+        }
+        do {
+            let driver = try drivers.value().first(where: { $0.driverAnnotationId == annotation.id })
+            pickedDriver.onNext(driver)
+        } catch {
+            drivers.onError(error)
+        }
+        
     }
 }
 
