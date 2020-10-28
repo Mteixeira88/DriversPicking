@@ -1,7 +1,11 @@
 import CoreLocation
-import UIKit
+import MapKit
 
-extension CLLocationCoordinate2D {
+extension CLLocationCoordinate2D: Equatable {
+    static public func ==(lhs: Self, rhs: Self) -> Bool {
+        return lhs.latitude == rhs.latitude && lhs.longitude == rhs.longitude
+    }
+    
     func generateRandomCoordinate() -> CLLocationCoordinate2D {
         let meterCord = 0.00900900900901 / 1000
         
@@ -27,4 +31,3 @@ extension CLLocationCoordinate2D {
         }
     }
 }
-

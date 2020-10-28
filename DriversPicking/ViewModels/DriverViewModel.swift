@@ -1,8 +1,9 @@
+import MapKit
 struct DriverViewModel {
     // MARK: - Properties
     private var driver: DriverModel
     
-    var annotation: Annotation
+    var annotation: DriverAnnotation
     
     var displayName: String {
         return driver.name
@@ -11,7 +12,7 @@ struct DriverViewModel {
     // MARK: - Init
     init(
         driver: DriverModel,
-        annotation: Annotation
+        annotation: DriverAnnotation
     ) {
         self.driver = driver
         self.annotation = annotation

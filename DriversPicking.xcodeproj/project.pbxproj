@@ -14,6 +14,7 @@
 		70B689CC254952930022510F /* DriverViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70B689CB254952930022510F /* DriverViewModel.swift */; };
 		70B689D0254954B40022510F /* AnnotationClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70B689CF254954B40022510F /* AnnotationClass.swift */; };
 		70B689D42549638F0022510F /* DriverService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70B689D32549638F0022510F /* DriverService.swift */; };
+		70B689DA254980850022510F /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70B689D9254980850022510F /* Constants.swift */; };
 		70BF3CFC253F375C00FD2789 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70BF3CFB253F375C00FD2789 /* AppDelegate.swift */; };
 		70BF3CFE253F375C00FD2789 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70BF3CFD253F375C00FD2789 /* SceneDelegate.swift */; };
 		70BF3D00253F375C00FD2789 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70BF3CFF253F375C00FD2789 /* MapViewController.swift */; };
@@ -31,6 +32,7 @@
 		70B689CB254952930022510F /* DriverViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriverViewModel.swift; sourceTree = "<group>"; };
 		70B689CF254954B40022510F /* AnnotationClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnotationClass.swift; sourceTree = "<group>"; };
 		70B689D32549638F0022510F /* DriverService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriverService.swift; sourceTree = "<group>"; };
+		70B689D9254980850022510F /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		70BF3CF8253F375C00FD2789 /* DriversPicking.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DriversPicking.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		70BF3CFB253F375C00FD2789 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		70BF3CFD253F375C00FD2789 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -83,6 +85,7 @@
 			isa = PBXGroup;
 			children = (
 				70B689CF254954B40022510F /* AnnotationClass.swift */,
+				70B689D9254980850022510F /* Constants.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -287,6 +290,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				70B689CC254952930022510F /* DriverViewModel.swift in Sources */,
+				70B689DA254980850022510F /* Constants.swift in Sources */,
 				70B689D0254954B40022510F /* AnnotationClass.swift in Sources */,
 				70BF3D1B253F389000FD2789 /* AppCoordinator.swift in Sources */,
 				706B93BA253F3DB400AC6938 /* MapViewModel.swift in Sources */,

@@ -1,16 +1,10 @@
-//
-//  ViewController.swift
-//  DriversPicking
-//
-//  Created by Miguel Teixeira on 20/10/2020.
-//
-
 import UIKit
 import MapKit
 import RxSwift
 import CoreLocation
 
 class MapViewController: UIViewController {
+
     
     // MARK: - Properties
     private(set) var mapView: MKMapView = {
@@ -22,11 +16,11 @@ class MapViewController: UIViewController {
     
     private(set) var viewModel: MapViewModel?
     
-    private(set) var currentLocation: CLLocationCoordinate2D?
+    private(set) var currentLocationAnnotation = MKPointAnnotation()
     private(set) var disposeBag = DisposeBag()
-    private(set) var selectedAnnotation: Annotation?
+    private(set) var selectedAnnotation: DriverAnnotation?
     
-    
+    // MARK: - Lifecycle
     override func loadView() {
         super.loadView()
         configureViewController()
@@ -54,11 +48,12 @@ class MapViewController: UIViewController {
     }
     
     private func setCurrentLocation(with currentLocation: CLLocationCoordinate2D) {
-        self.currentLocation = currentLocation
         mapView.setRegion(getRegion(from: currentLocation), animated: true)
         
         let mkAnnotation: MKPointAnnotation = MKPointAnnotation()
         mkAnnotation.coordinate = currentLocation
+        self.currentLocationAnnotation = mkAnnotation
+        
         mapView.addAnnotation(mkAnnotation)
     }
     
@@ -76,7 +71,8 @@ class MapViewController: UIViewController {
             
     private func setLocation(on driverLocation: DriverViewModel) {
         mapView.annotations.forEach({ annotation in
-            if let annotation = annotation as? Annotation, annotation.id == driverLocation.annotation.id {
+            if let annotation = annotation as? DriverAnnotation,
+               annotation.id == driverLocation.annotation.id {
                 self.mapView.removeAnnotation(annotation)
             }
         })
@@ -105,68 +101,44 @@ extension MapViewController: MapViewModelProtocol {
 
 // MARK: - MKMapViewDelegate
 extension MapViewController: MKMapViewDelegate {
-//    func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
-//        guard let currentLocation = currentLocation else {
-//            return
-//        }
-//
-//        mapView.setRegion(getRegion(from: currentLocation), animated: true)
-//    }
-    
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
-        guard let ann = view.annotation as? Annotation else { return }
+        guard let ann = view.annotation as? DriverAnnotation else { return }
         
-        if let selectedAnnotation = selectedAnnotation {
-            self.mapView.removeAnnotation(selectedAnnotation)
-            self.mapView.addAnnotation(selectedAnnotation)
+        if let selectedAnnotation = self.selectedAnnotation {
+            mapView.removeAnnotation(selectedAnnotation)
+            mapView.addAnnotation(selectedAnnotation)
+            self.selectedAnnotation = selectedAnnotation.id == ann.id ?  nil : ann
             
-            if selectedAnnotation.id == ann.id {
-                self.selectedAnnotation = nil
-            } else {
-                self.selectedAnnotation = ann
-            }
         } else {
             self.selectedAnnotation = ann
         }
         
-        self.mapView.removeAnnotation(ann)
-        self.mapView.addAnnotation(ann)
-        
+        mapView.removeAnnotation(ann)
+        mapView.addAnnotation(ann)
     }
     
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-        guard let currentLocation = currentLocation else {
-            return nil
-        }
-        if annotation is MKUserLocation {
-            return nil;
+        var pinView: MKAnnotationView?
+        if annotation.coordinate == currentLocationAnnotation.coordinate {
+            pinView = MKAnnotationView(annotation: annotation, reuseIdentifier: PinIdent.user.rawValue);
+            pinView?.image = Assets.image(.locationPin)
         } else {
-            let pinIdent = "PinLocation"
-            var pinView: MKAnnotationView?
-            if let dequeuedView = mapView.dequeueReusableAnnotationView(withIdentifier: pinIdent) {
-                dequeuedView.annotation = annotation
-                pinView = dequeuedView
-            } else {
-                if annotation.coordinate.latitude == currentLocation.latitude,
-                   annotation.coordinate.longitude == currentLocation.longitude {
-                    pinView = MKAnnotationView(annotation: annotation, reuseIdentifier: "User");
-                    pinView?.image = UIImage(named: "location-pin")
+            if let ann = annotation as? DriverAnnotation {
+                if let selectedAnnotation = selectedAnnotation,
+                    ann.id == selectedAnnotation.id {
+                    pinView = MKAnnotationView(annotation: annotation, reuseIdentifier: PinIdent.driverSelected.rawValue);
+                    pinView?.image = Assets.image(.sportCarSelected)
                 } else {
-                    if let ann = annotation as? Annotation {
-                        if let selectedAnnotation = selectedAnnotation,
-                            ann.id == selectedAnnotation.id {
-                            pinView = MKAnnotationView(annotation: annotation, reuseIdentifier: "Driver-selected");
-                            pinView?.image = UIImage(named: "sport-car-selected")
-                        } else {
-                            pinView = MKAnnotationView(annotation: annotation, reuseIdentifier: "Driver");
-                            pinView?.image = UIImage(named: "sport-car")
-                        }
-                    }
-                    
+                    pinView = MKAnnotationView(
+                        annotation: annotation,
+                        reuseIdentifier: PinIdent.driver.rawValue
+                    );
+                    pinView?.image = Assets.image(.sportCar)
                 }
             }
-            return pinView;
+            
         }
+        return pinView
     }
 }

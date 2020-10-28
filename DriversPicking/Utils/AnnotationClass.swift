@@ -1,5 +1,5 @@
 import MapKit
 
-class Annotation: MKPointAnnotation {
+class DriverAnnotation: MKPointAnnotation {
     let id: String = UUID().uuidString
 }

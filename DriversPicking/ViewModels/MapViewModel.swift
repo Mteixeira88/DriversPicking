@@ -58,7 +58,7 @@ class MapViewModel: NSObject {
         driverService.fetchDrivers()
             .map {
                 $0.map { driver -> DriverViewModel in
-                    let annotation = Annotation()
+                    let annotation = DriverAnnotation()
                     annotation.coordinate = currentLocation.generateRandomCoordinate()
                     return DriverViewModel(
                         driver: driver,
@@ -76,10 +76,12 @@ class MapViewModel: NSObject {
                 
                 Observable<Int>
                     .interval(RxTimeInterval.seconds(5), scheduler: MainScheduler.instance)
-                    .subscribe { [weak self ]_ in
+                    .subscribe { [weak self ] _ in
                         self?.updateDriver()
                     }
                     .disposed(by: self.disposeBag)
+            }, onError: { [weak self ] error in
+                self?.drivers.onError(error)
             })
             .disposed(by: disposeBag)
     }
