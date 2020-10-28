@@ -13,6 +13,7 @@
 		70B6899F2548693E0022510F /* DriverModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70B6899E2548693E0022510F /* DriverModel.swift */; };
 		70B689CC254952930022510F /* DriverViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70B689CB254952930022510F /* DriverViewModel.swift */; };
 		70B689D0254954B40022510F /* AnnotationClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70B689CF254954B40022510F /* AnnotationClass.swift */; };
+		70B689D42549638F0022510F /* DriverService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70B689D32549638F0022510F /* DriverService.swift */; };
 		70BF3CFC253F375C00FD2789 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70BF3CFB253F375C00FD2789 /* AppDelegate.swift */; };
 		70BF3CFE253F375C00FD2789 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70BF3CFD253F375C00FD2789 /* SceneDelegate.swift */; };
 		70BF3D00253F375C00FD2789 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70BF3CFF253F375C00FD2789 /* MapViewController.swift */; };
@@ -29,6 +30,7 @@
 		70B6899E2548693E0022510F /* DriverModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriverModel.swift; sourceTree = "<group>"; };
 		70B689CB254952930022510F /* DriverViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriverViewModel.swift; sourceTree = "<group>"; };
 		70B689CF254954B40022510F /* AnnotationClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnotationClass.swift; sourceTree = "<group>"; };
+		70B689D32549638F0022510F /* DriverService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriverService.swift; sourceTree = "<group>"; };
 		70BF3CF8253F375C00FD2789 /* DriversPicking.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DriversPicking.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		70BF3CFB253F375C00FD2789 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		70BF3CFD253F375C00FD2789 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -85,6 +87,14 @@
 			path = Utils;
 			sourceTree = "<group>";
 		};
+		70B689D22549611B0022510F /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+				70B689D32549638F0022510F /* DriverService.swift */,
+			);
+			path = Networking;
+			sourceTree = "<group>";
+		};
 		70BF3CEF253F375C00FD2789 = {
 			isa = PBXGroup;
 			children = (
@@ -106,6 +116,7 @@
 		70BF3CFA253F375C00FD2789 /* DriversPicking */ = {
 			isa = PBXGroup;
 			children = (
+				70B689D22549611B0022510F /* Networking */,
 				70B689CE254954A80022510F /* Utils */,
 				70B6899D254869340022510F /* Models */,
 				70AA69772548412400973B72 /* Extensions */,
@@ -280,6 +291,7 @@
 				70BF3D1B253F389000FD2789 /* AppCoordinator.swift in Sources */,
 				706B93BA253F3DB400AC6938 /* MapViewModel.swift in Sources */,
 				70BF3D00253F375C00FD2789 /* MapViewController.swift in Sources */,
+				70B689D42549638F0022510F /* DriverService.swift in Sources */,
 				70B6899F2548693E0022510F /* DriverModel.swift in Sources */,
 				70AA69792548413700973B72 /* CLLocation2D+Ext.swift in Sources */,
 				70BF3CFC253F375C00FD2789 /* AppDelegate.swift in Sources */,

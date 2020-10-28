@@ -24,6 +24,7 @@ class MapViewController: UIViewController {
     
     private(set) var currentLocation: CLLocationCoordinate2D?
     private(set) var disposeBag = DisposeBag()
+    private(set) var selectedAnnotation: Annotation?
     
     
     override func loadView() {
@@ -73,13 +74,14 @@ class MapViewController: UIViewController {
             .disposed(by: disposeBag)
     }
             
-    private func setLocation(on driverLocation: DriverModel) {
+    private func setLocation(on driverLocation: DriverViewModel) {
         mapView.annotations.forEach({ annotation in
-            if let annotation = annotation as? DriverModel, annotation.id == driverLocation.id {
+            if let annotation = annotation as? Annotation, annotation.id == driverLocation.annotation.id {
                 self.mapView.removeAnnotation(annotation)
             }
         })
-        mapView.addAnnotation(driverLocation)
+        
+        mapView.addAnnotation(driverLocation.annotation)
     }
     
     private func getRegion(from currentLocation: CLLocationCoordinate2D) -> MKCoordinateRegion {
@@ -103,12 +105,33 @@ extension MapViewController: MapViewModelProtocol {
 
 // MARK: - MKMapViewDelegate
 extension MapViewController: MKMapViewDelegate {
-    func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
-        guard let currentLocation = currentLocation else {
-            return
+//    func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+//        guard let currentLocation = currentLocation else {
+//            return
+//        }
+//
+//        mapView.setRegion(getRegion(from: currentLocation), animated: true)
+//    }
+    
+    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+        guard let ann = view.annotation as? Annotation else { return }
+        
+        if let selectedAnnotation = selectedAnnotation {
+            self.mapView.removeAnnotation(selectedAnnotation)
+            self.mapView.addAnnotation(selectedAnnotation)
+            
+            if selectedAnnotation.id == ann.id {
+                self.selectedAnnotation = nil
+            } else {
+                self.selectedAnnotation = ann
+            }
+        } else {
+            self.selectedAnnotation = ann
         }
         
-        mapView.setRegion(getRegion(from: currentLocation), animated: true)
+        self.mapView.removeAnnotation(ann)
+        self.mapView.addAnnotation(ann)
+        
     }
     
     
@@ -127,11 +150,20 @@ extension MapViewController: MKMapViewDelegate {
             } else {
                 if annotation.coordinate.latitude == currentLocation.latitude,
                    annotation.coordinate.longitude == currentLocation.longitude {
-                    pinView = MKAnnotationView(annotation: annotation, reuseIdentifier: pinIdent);
+                    pinView = MKAnnotationView(annotation: annotation, reuseIdentifier: "User");
                     pinView?.image = UIImage(named: "location-pin")
                 } else {
-                    pinView = MKAnnotationView(annotation: annotation, reuseIdentifier: pinIdent);
-                    pinView?.image = UIImage(named: "sport-car")
+                    if let ann = annotation as? Annotation {
+                        if let selectedAnnotation = selectedAnnotation,
+                            ann.id == selectedAnnotation.id {
+                            pinView = MKAnnotationView(annotation: annotation, reuseIdentifier: "Driver-selected");
+                            pinView?.image = UIImage(named: "sport-car-selected")
+                        } else {
+                            pinView = MKAnnotationView(annotation: annotation, reuseIdentifier: "Driver");
+                            pinView?.image = UIImage(named: "sport-car")
+                        }
+                    }
+                    
                 }
             }
             return pinView;

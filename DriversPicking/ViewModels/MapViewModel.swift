@@ -18,12 +18,19 @@ class MapViewModel: NSObject {
     private var timerObs: Disposable?
     
     
-    var drivers = BehaviorSubject(value: [DriverModel]())
+    var drivers = BehaviorSubject(value: [DriverViewModel]())
     
-    private var privateDriver = [DriverModel]()
+    private let driverService: DriverServiceProtocol
+    
+    private var privateDriver = [DriverViewModel]()
     
     // MARK: - Init
-    init(locationDelegate: MapViewModelProtocol, manager: CLLocationManager = CLLocationManager()) {
+    init(
+        locationDelegate: MapViewModelProtocol,
+        manager: CLLocationManager = CLLocationManager(),
+        driverService: DriverServiceProtocol = DriverService()
+    ) {
+        self.driverService = driverService
         super.init()
         self.locationDelegate = locationDelegate
         self.manager = manager
@@ -38,34 +45,43 @@ class MapViewModel: NSObject {
             manager?.requestWhenInUseAuthorization()
         default:
             locationDelegate?.currentLocationAt(manager?.location?.coordinate)
-            privateDriver = generateDrivers(currentLocation: manager?.location?.coordinate)
-            drivers.onNext(privateDriver)
             manager?.startUpdatingLocation()
-            timerObs = Observable<Int>
-                .interval(RxTimeInterval.seconds(5), scheduler: MainScheduler.instance)
-                .subscribe { [weak self ]_ in
-                    self?.updateDriver()
-                }
+            generateDrivers(currentLocation: manager?.location?.coordinate)
         }
     }
     
-    private func generateDrivers(currentLocation: CLLocationCoordinate2D?) -> [DriverModel] {
+    private func generateDrivers(currentLocation: CLLocationCoordinate2D?) {
         guard let currentLocation = currentLocation else {
-            return []
+            return
         }
         
-        var drivers = [DriverModel]()
-        
-        for n in 0...6 {
-            print(n)
-            let driverLocation = currentLocation.generateRandomCoordinate(random: n)
-            let driver = DriverModel()
-            driver.title = "driver \(n)"
-            driver.coordinate = driverLocation
-            drivers.append(driver)
-        }
-        
-        return drivers
+        driverService.fetchDrivers()
+            .map {
+                $0.map { driver -> DriverViewModel in
+                    let annotation = Annotation()
+                    annotation.coordinate = currentLocation.generateRandomCoordinate()
+                    return DriverViewModel(
+                        driver: driver,
+                        annotation: annotation
+                    )
+                }
+            }
+            .subscribe(onNext: { [weak self] drivers in
+                guard let self = self else {
+                    return
+                }
+                
+                self.privateDriver = drivers
+                self.drivers.onNext(drivers)
+                
+                Observable<Int>
+                    .interval(RxTimeInterval.seconds(5), scheduler: MainScheduler.instance)
+                    .subscribe { [weak self ]_ in
+                        self?.updateDriver()
+                    }
+                    .disposed(by: self.disposeBag)
+            })
+            .disposed(by: disposeBag)
     }
     
     private func updateDriver() {
@@ -73,7 +89,7 @@ class MapViewModel: NSObject {
             return
         }
         privateDriver.enumerated().forEach { (index, driver) in
-            driver.coordinate = currentLocation.generateRandomCoordinate(random: index)
+            driver.annotation.coordinate = currentLocation.generateRandomCoordinate()
         }
         drivers.onNext(privateDriver)
     }
