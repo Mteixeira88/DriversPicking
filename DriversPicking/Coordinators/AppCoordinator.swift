@@ -1,12 +1,4 @@
-//
-//  AppCoordinator.swift
-//  DriversPicking
-//
-//  Created by Miguel Teixeira on 20/10/2020.
-//
-
 import UIKit
-
 
 class AppCoordinator {
     

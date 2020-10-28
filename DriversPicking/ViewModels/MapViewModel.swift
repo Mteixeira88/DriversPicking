@@ -45,7 +45,6 @@ class MapViewModel: NSObject {
                 .interval(RxTimeInterval.seconds(5), scheduler: MainScheduler.instance)
                 .subscribe { [weak self ]_ in
                     self?.updateDriver()
-//                    self?.timerObs?.dispose()
                 }
         }
     }
