@@ -37,7 +37,7 @@ class MapViewModel: NSObject {
         self.manager?.desiredAccuracy = .greatestFiniteMagnitude
     }
     
-    // MARK: - Setup
+    // MARK: - Private func
     private func checkLocationPermissions() {
         switch manager?.authorizationStatus {
         case .restricted, .denied, .notDetermined:
@@ -113,6 +113,7 @@ class MapViewModel: NSObject {
         }
     }
     
+    // MARK: - Public func
     func pickDriver(with annotation: DriverAnnotation?) {
         guard let annotation = annotation else {
             presentedDriver.onNext(userDriver)
@@ -134,6 +135,7 @@ class MapViewModel: NSObject {
     }
 }
 
+// MARK: - CLLocationManagerDelegate
 extension MapViewModel: CLLocationManagerDelegate {
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         checkLocationPermissions()

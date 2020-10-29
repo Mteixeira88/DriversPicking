@@ -7,9 +7,7 @@ protocol DriverServiceProtocol {
 class DriverService: DriverServiceProtocol {
     func fetchDrivers() -> Observable<[DriverModel]> {
         return Observable.create { observer -> Disposable in
-            let task = URLSession.shared.dataTask(with: URL(string: "https://sheetdb.io/api/v1/pc1ght2w5p69l")!) {
-                data, _, error in
-                
+            URLSession.shared.dataTask(with:  URL(string: "https://sheetdb.io/api/v1/pc1ght2w5p69l")!, completionHandler: { (data, _, error) -> Void in
                 if let error = error {
                     observer.onError(error)
                 }
@@ -24,13 +22,9 @@ class DriverService: DriverServiceProtocol {
                 } catch {
                     observer.onError(error)
                 }
-            }
+            }).resume()
             
-            task.resume()
-            
-            return Disposables.create {
-                task.cancel()
-            }
+            return Disposables.create {}
         }
     }
 }

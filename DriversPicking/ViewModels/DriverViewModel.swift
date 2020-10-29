@@ -82,4 +82,32 @@ struct DriverViewModel {
             }
         }
     }
+    
+    func getDirections(
+        from source: CLLocationCoordinate2D,
+        to destination: CLLocationCoordinate2D
+    ) -> Observable<String> {
+        return Observable.create { (observer) -> Disposable in
+            
+            let request = MKDirections.Request()
+            request.source = MKMapItem(placemark: MKPlacemark(coordinate: source))
+            request.destination = MKMapItem(placemark: MKPlacemark(coordinate: destination))
+            request.requestsAlternateRoutes = false
+            request.transportType = .automobile
+            
+            let directions = MKDirections(request: request)
+            directions.calculate { (response, error) in
+                response?.routes.forEach({ (route) in
+                    let time = route.expectedTravelTime / 60
+                    var string = Date().convertToFormat()
+                    if !time.isZero {
+                        string = "\(route.distance)mts and \(Int(time))min away"
+                    }
+                    observer.onNext(string)
+                })
+            }
+            
+            return Disposables.create{}
+        }
+    }
 }

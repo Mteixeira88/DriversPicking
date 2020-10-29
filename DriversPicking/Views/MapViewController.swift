@@ -98,22 +98,27 @@ class MapViewController: UIViewController {
                 guard let self = self else {
                     return
                 }
-                self.driverView.dateLabel.text = Date().convertToFormat()
+//                self.driverView.dateLabel.text = Date().convertToFormat()
                 if let driver = driver {
                     self.driverView.nameLabel.text = driver.displayName
                     driver
-                    .getAddress(with: driver.annotation.coordinate)
-                    .bind(to: self.driverView.addressLabel.rx.text)
-                    .disposed(by: self.disposeBag)
+                        .getDirections(
+                            from: self.currentLocationAnnotation.coordinate,
+                            to: driver.annotation.coordinate
+                        )
+                        .bind(to: self.driverView.dateLabel.rx.text)
+                        .disposed(by: self.disposeBag)
+                    
+                    driver
+                        .getAddress(with: driver.annotation.coordinate)
+                        .bind(to: self.driverView.addressLabel.rx.text)
+                        .disposed(by: self.disposeBag)
                     
                     driver
                         .downloadImage()
                         .bind(to: self.driverView.profileImageView.rx.image)
                         .disposed(by: self.disposeBag)
                 }
-                
-                
-                
             }, onError: { error in
                 print(error)
             })
