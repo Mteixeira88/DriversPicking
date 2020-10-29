@@ -21,6 +21,18 @@ class MapViewController: UIViewController {
         return view
     }()
     
+    private(set) var buttonReCenter: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.alpha = 0
+        button.setTitleColor(.white, for: .normal)
+        button.layer.cornerRadius = 10
+        button.backgroundColor = .systemBlue
+        button.setTitle("Re-center", for: .normal)
+        
+        return button
+    }()
+    
     private(set) var viewModel: MapViewModel?
     private(set) var currentLocationAnnotation = MKPointAnnotation()
     private(set) var disposeBag = DisposeBag()
@@ -54,6 +66,7 @@ class MapViewController: UIViewController {
     private func configureViewController() {
         view.addSubview(mapView)
         view.addSubview(driverView)
+        view.addSubview(buttonReCenter)
         
         NSLayoutConstraint.activate([
             mapView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -64,12 +77,16 @@ class MapViewController: UIViewController {
             driverView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 30),
             driverView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             driverView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+            
+            buttonReCenter.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -40),
+            buttonReCenter.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+            buttonReCenter.widthAnchor.constraint(equalToConstant: 100)
         ])
         
     }
     
     private func setCurrentLocation(with currentLocation: CLLocationCoordinate2D) {
-        mapView.setRegion(getRegion(from: currentLocation), animated: true)
+        setRegion(from: currentLocation)
         
         let mkAnnotation: MKPointAnnotation = MKPointAnnotation()
         mkAnnotation.coordinate = currentLocation
@@ -98,7 +115,6 @@ class MapViewController: UIViewController {
                 guard let self = self else {
                     return
                 }
-//                self.driverView.dateLabel.text = Date().convertToFormat()
                 if let driver = driver {
                     self.driverView.nameLabel.text = driver.displayName
                     driver
@@ -123,14 +139,27 @@ class MapViewController: UIViewController {
                 print(error)
             })
             .disposed(by: disposeBag)
+        
+        buttonReCenter
+            .rx
+            .tap
+            .subscribe { [weak self] _ in
+                guard let self = self else {
+                    return
+                }
+                self.setRegion(from: self.currentLocationAnnotation.coordinate)
+            }
+            .disposed(by: disposeBag)
     }
     
-    private func getRegion(from currentLocation: CLLocationCoordinate2D) -> MKCoordinateRegion {
-        return MKCoordinateRegion(
+    private func setRegion(from currentLocation: CLLocationCoordinate2D) {
+        let region = MKCoordinateRegion(
             center: currentLocation,
             latitudinalMeters: 1000,
             longitudinalMeters: 1000
         )
+        
+        mapView.setRegion(region, animated: true)
     }
 }
 
@@ -146,6 +175,18 @@ extension MapViewController: MapViewModelProtocol {
 
 // MARK: - MKMapViewDelegate
 extension MapViewController: MKMapViewDelegate {
+    func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+        buttonReCenter.alpha =
+            mapView.visibleMapRect.contains(MKMapPoint(currentLocationAnnotation.coordinate))
+            ? 0
+            : 1
+    }
+    
+    func mapView(_ mapView: MKMapView, didFailToLocateUserWithError error: Error) {
+        print(error)
+    }
+    
+    
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         guard let ann = view.annotation as? DriverAnnotation else { return }
         
