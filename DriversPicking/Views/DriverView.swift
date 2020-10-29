@@ -27,6 +27,7 @@ class DriverView: UIView {
         label.textColor = .systemGray2
         label.font = UIFont.preferredFont(forTextStyle: .footnote)
         label.adjustsFontForContentSizeCategory = true
+        label.numberOfLines = 0
         
         return label
     }()
