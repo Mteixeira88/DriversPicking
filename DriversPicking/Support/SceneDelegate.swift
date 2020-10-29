@@ -10,6 +10,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         let window = UIWindow(windowScene: scene)
         appCoordinator = AppCoordinator(window: window)
+        appCoordinator?.start()
     }
 
 

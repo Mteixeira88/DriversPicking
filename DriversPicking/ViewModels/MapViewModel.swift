@@ -3,6 +3,7 @@ import CoreLocation
 import RxSwift
 import RxCocoa
 import MapKit
+import Contacts
 
 protocol MapViewModelProtocol {
     func currentLocationAt(_ currentLocation: CLLocationCoordinate2D?)
@@ -13,24 +14,24 @@ class MapViewModel: NSObject {
     // MARK: - Properties
     private(set) var locationDelegate: MapViewModelProtocol?
     private(set) var manager: CLLocationManager?
-    private(set) var delegate: CLLocationManagerDelegate?
+    private(set) weak var delegate: CLLocationManagerDelegate?
     private let disposeBag = DisposeBag()
+    private var timerObs: Disposable?
     private let driverService: DriverServiceProtocol
+    private(set) var userDriver = DriverViewModel(driver: DriverModel(), annotation: DriverAnnotation())
     
     // MARK: - Subjects
     var drivers = BehaviorSubject(value: [DriverViewModel]())
-    var pickedDriver: BehaviorSubject<DriverViewModel?> = BehaviorSubject(value: nil)
+    var presentedDriver: BehaviorSubject<DriverViewModel?> = BehaviorSubject(value: nil)
 
     
     // MARK: - Init
     init(
-        locationDelegate: MapViewModelProtocol,
         manager: CLLocationManager = CLLocationManager(),
         driverService: DriverServiceProtocol = DriverService()
     ) {
         self.driverService = driverService
         super.init()
-        self.locationDelegate = locationDelegate
         self.manager = manager
         self.manager?.delegate = self
         self.manager?.desiredAccuracy = .greatestFiniteMagnitude
@@ -53,6 +54,9 @@ class MapViewModel: NSObject {
             return
         }
         
+        userDriver.annotation.coordinate = currentLocation
+        presentedDriver.onNext(userDriver)
+        
         driverService.fetchDrivers()
             .map {
                 $0.map { driver -> DriverViewModel in
@@ -68,19 +72,25 @@ class MapViewModel: NSObject {
                 guard let self = self else {
                     return
                 }
-                
-                self.drivers.onNext(drivers)
-                
-                Observable<Int>
-                    .interval(RxTimeInterval.seconds(5), scheduler: MainScheduler.instance)
-                    .subscribe { [weak self ] _ in
-                        self?.updateDriver()
-                    }
-                    .disposed(by: self.disposeBag)
+                self.startDrivers(with: drivers)
             }, onError: { [weak self ] error in
                 self?.drivers.onError(error)
             })
             .disposed(by: disposeBag)
+    }
+    
+    private func startDrivers(with drivers: [DriverViewModel]? = nil) {
+        timerObs?.dispose()
+        timerObs = Observable<Int>
+            .interval(RxTimeInterval.seconds(5), scheduler: MainScheduler.instance)
+            .subscribe { [weak self ] _ in
+                self?.updateDriver()
+            }
+        if let drivers = drivers {
+            self.drivers.onNext(drivers)
+        } else {
+            updateDriver()
+        }
     }
     
     private func updateDriver() {
@@ -88,31 +98,52 @@ class MapViewModel: NSObject {
             return
         }
         do {
-            try drivers.value().enumerated().forEach { (index, driver) in
-                driver.annotation.coordinate = currentLocation.generateRandomCoordinate()
+            try self.drivers
+                .value()
+                .enumerated()
+                .forEach { (index, driver) in
+                    driver.annotation.coordinate = currentLocation.generateRandomCoordinate()
+                    if let pickedDriver = try? presentedDriver.value(),
+                       driver.annotation.id == pickedDriver.annotation.id {
+                        self.presentedDriver.onNext(driver)
+                    }
             }
         } catch {
-            drivers.onError(error)
+            self.drivers.onError(error)
         }
     }
     
     func pickDriver(with annotation: DriverAnnotation?) {
         guard let annotation = annotation else {
-            pickedDriver.onNext(nil)
+            presentedDriver.onNext(userDriver)
             return
         }
         do {
-            let driver = try drivers.value().first(where: { $0.driverAnnotationId == annotation.id })
-            pickedDriver.onNext(driver)
+            let driver = try drivers.value().first(
+                where: { $0.annotation.id == annotation.id }
+            )
+            presentedDriver.onNext(driver)
         } catch {
             drivers.onError(error)
         }
         
+    }
+    
+    func setDelegate(_ locationDelegate: MapViewModelProtocol) {
+        self.locationDelegate = locationDelegate
     }
 }
 
 extension MapViewModel: CLLocationManagerDelegate {
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         checkLocationPermissions()
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if let location = locations.last {
+            timerObs?.dispose()
+            locationDelegate?.currentLocationAt(location.coordinate)
+            startDrivers()
+        }
     }
 }

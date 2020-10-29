@@ -12,7 +12,6 @@ class DriverService: DriverServiceProtocol {
                 
                 if let error = error {
                     observer.onError(error)
-                    return
                 }
                 
                 guard let data = data else {

@@ -14,11 +14,28 @@ class MapViewController: UIViewController {
         return mapView
     }()
     
-    private(set) var viewModel: MapViewModel?
+    private(set) var driverView: DriverView = {
+        let view = DriverView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        return view
+    }()
     
+    private(set) var viewModel: MapViewModel?
     private(set) var currentLocationAnnotation = MKPointAnnotation()
     private(set) var disposeBag = DisposeBag()
     private(set) var selectedAnnotation: DriverAnnotation?
+    
+    // MARK: - Init
+    init(viewModel: MapViewModel) {
+        super.init(nibName: nil, bundle: nil)
+        self.viewModel = viewModel
+        self.viewModel?.setDelegate(self)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     // MARK: - Lifecycle
     override func loadView() {
@@ -28,7 +45,6 @@ class MapViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        viewModel = MapViewModel(locationDelegate: self)
         setupBindings()
         mapView.delegate = self
     }
@@ -37,12 +53,17 @@ class MapViewController: UIViewController {
     // MARK: - Setup
     private func configureViewController() {
         view.addSubview(mapView)
+        view.addSubview(driverView)
         
         NSLayoutConstraint.activate([
             mapView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             mapView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             mapView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            mapView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+            mapView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            
+            driverView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 30),
+            driverView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            driverView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
         ])
         
     }
@@ -61,9 +82,9 @@ class MapViewController: UIViewController {
         viewModel?
             .drivers
             .observeOn(MainScheduler.instance)
-            .subscribe(onNext: { drivers in
+            .subscribe(onNext: { [weak self] drivers in
                 drivers.forEach { (driver) in
-                    self.setLocation(on: driver)
+                    self?.mapView.addAnnotation(driver.annotation)
                 }
             }, onError: { error in
                 print(error)
@@ -71,25 +92,32 @@ class MapViewController: UIViewController {
             .disposed(by: disposeBag)
         
         viewModel?
-            .pickedDriver
+            .presentedDriver
             .observeOn(MainScheduler.instance)
-            .subscribe(onNext: { driver in
-                if let driver = driver {
-                    print(driver)
+            .subscribe(onNext: { [weak self]  driver in
+                guard let self = self else {
+                    return
                 }
+                self.driverView.dateLabel.text = Date().convertToFormat()
+                if let driver = driver {
+                    self.driverView.nameLabel.text = driver.displayName
+                    driver
+                    .getAddress(with: driver.annotation.coordinate)
+                    .bind(to: self.driverView.addressLabel.rx.text)
+                    .disposed(by: self.disposeBag)
+                    
+                    driver
+                        .downloadImage()
+                        .bind(to: self.driverView.profileImageView.rx.image)
+                        .disposed(by: self.disposeBag)
+                }
+                
+                
+                
+            }, onError: { error in
+                print(error)
             })
             .disposed(by: disposeBag)
-    }
-            
-    private func setLocation(on driverLocation: DriverViewModel) {
-        mapView.annotations.forEach({ annotation in
-            if var annotation = annotation as? DriverAnnotation,
-               annotation.id == driverLocation.annotation.id {
-                annotation = driverLocation.annotation
-            } else {
-                mapView.addAnnotation(driverLocation.annotation)
-            }
-        })
     }
     
     private func getRegion(from currentLocation: CLLocationCoordinate2D) -> MKCoordinateRegion {

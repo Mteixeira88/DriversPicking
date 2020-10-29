@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		674CE951FB1736188ABDFD86 /* Pods_DriversPicking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E295BE42642051806B0D103 /* Pods_DriversPicking.framework */; };
+		70019C8B2549B3CB001C1A0A /* DriverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70019C8A2549B3CB001C1A0A /* DriverView.swift */; };
+		70019C92254AB21C001C1A0A /* Date+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70019C91254AB21C001C1A0A /* Date+Ext.swift */; };
 		706B93BA253F3DB400AC6938 /* MapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 706B93B9253F3DB400AC6938 /* MapViewModel.swift */; };
 		70AA69792548413700973B72 /* CLLocation2D+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70AA69782548413700973B72 /* CLLocation2D+Ext.swift */; };
 		70B6899F2548693E0022510F /* DriverModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70B6899E2548693E0022510F /* DriverModel.swift */; };
@@ -26,6 +28,8 @@
 /* Begin PBXFileReference section */
 		3E295BE42642051806B0D103 /* Pods_DriversPicking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DriversPicking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		69DBFC7B718C2891421E78F1 /* Pods-DriversPicking.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DriversPicking.debug.xcconfig"; path = "Target Support Files/Pods-DriversPicking/Pods-DriversPicking.debug.xcconfig"; sourceTree = "<group>"; };
+		70019C8A2549B3CB001C1A0A /* DriverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriverView.swift; sourceTree = "<group>"; };
+		70019C91254AB21C001C1A0A /* Date+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Ext.swift"; sourceTree = "<group>"; };
 		706B93B9253F3DB400AC6938 /* MapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewModel.swift; sourceTree = "<group>"; };
 		70AA69782548413700973B72 /* CLLocation2D+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLLocation2D+Ext.swift"; sourceTree = "<group>"; };
 		70B6899E2548693E0022510F /* DriverModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriverModel.swift; sourceTree = "<group>"; };
@@ -69,6 +73,7 @@
 			isa = PBXGroup;
 			children = (
 				70AA69782548413700973B72 /* CLLocation2D+Ext.swift */,
+				70019C91254AB21C001C1A0A /* Date+Ext.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -155,6 +160,7 @@
 			isa = PBXGroup;
 			children = (
 				70BF3CFF253F375C00FD2789 /* MapViewController.swift */,
+				70019C8A2549B3CB001C1A0A /* DriverView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -291,6 +297,7 @@
 			files = (
 				70B689CC254952930022510F /* DriverViewModel.swift in Sources */,
 				70B689DA254980850022510F /* Constants.swift in Sources */,
+				70019C92254AB21C001C1A0A /* Date+Ext.swift in Sources */,
 				70B689D0254954B40022510F /* AnnotationClass.swift in Sources */,
 				70BF3D1B253F389000FD2789 /* AppCoordinator.swift in Sources */,
 				706B93BA253F3DB400AC6938 /* MapViewModel.swift in Sources */,
@@ -299,6 +306,7 @@
 				70B6899F2548693E0022510F /* DriverModel.swift in Sources */,
 				70AA69792548413700973B72 /* CLLocation2D+Ext.swift in Sources */,
 				70BF3CFC253F375C00FD2789 /* AppDelegate.swift in Sources */,
+				70019C8B2549B3CB001C1A0A /* DriverView.swift in Sources */,
 				70BF3CFE253F375C00FD2789 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
