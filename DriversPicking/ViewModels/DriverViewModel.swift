@@ -54,13 +54,17 @@ struct DriverViewModel {
     
     func downloadImage() -> Observable<UIImage> {
         return Observable.create { (observer) -> Disposable in
-            guard let url = URL(string: driver.image) else {
+            
+            
+            
+            guard let imageString = driver.image,
+                let url = URL(string: imageString) else {
                 observer.onNext(Assets.image(.locationPin))
                 return Disposables.create {
                 }
             }
             
-            if let imageFromCache = DriverViewModel.imageCache.object(forKey: driver.image as AnyObject),
+            if let imageFromCache = DriverViewModel.imageCache.object(forKey: imageString as AnyObject),
                let image = imageFromCache as? UIImage {
                 observer.onNext(image)
                 return Disposables.create {}
