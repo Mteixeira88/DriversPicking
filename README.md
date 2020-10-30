@@ -35,11 +35,42 @@ This project is intentionally open-ended. The goal of this project is to show th
 ### Dependencies
 
 - This project uses ```CocoaPods``` for dependency manager.
-- This projects depends on ```RxSwift``` and ```RxCocoa``` for ```DriversPicking``` target. ```RxTest``` and ```RxBlocking``` for ```DriversPickingTests``` target.
+- This projects depends on: ```RxSwift``` and ```RxCocoa``` for ```DriversPicking``` target. target.
+- Before running this project you must run ```pod install``` in order to have all the pods in order to install them.
+
+```shell
+target 'DriversPicking' do
+  # Comment the next line if you don't want to use dynamic frameworks
+  use_frameworks!
+
+  # Pods for DriversPicking
+  pod 'RxSwift'
+  pod 'RxCocoa'
+
+  target 'DriversPickingTests' do
+    inherit! :search_paths
+    # Pods for testing
+    pod 'RxTest'
+    pod 'RxBlocking'
+  end
+
+end
+```
 
 ### API
 
 - To fetch the drivers this app uses https://sheetdb.io as database with https://docs.google.com/spreadsheets/d/1qU-g9jqvtvtKwrGT0LI5Zbpp_N1PWBsCF4FWk6nkv1k/edit?usp=sharing
 
+- The final API URL is https://sheetdb.io/api/v1/pc1ght2w5p69l (GET)
+
+```swift
+{
+"id": String,
+"name": String,
+"image": String, // optional
+}
+```
+
 ### Tests
 
+- This app uses ```RxTest``` and ```RxBlocking``` for ```DriversPickingTests```.
