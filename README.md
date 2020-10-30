@@ -16,8 +16,7 @@ This project is intentionally open-ended. The goal of this project is to show th
 - If a driver is not selected there will be an info view showing the current address, name (USER), image (placeholder) and date.
 
 ## Screenshots
-<img src="permission_screen.png" height="500px"> <img src="launch.png" height="500px">
-<img src="user_screen.png" height="500px"> <img src="driver_screen.png" height="500px">
+<img src="launch.png" height="500px"> <img src="permission_screen.png" height="500px"> <img src="user_screen.png" height="500px"> <img src="driver_screen.png" height="500px">
 
 ## Code
 
