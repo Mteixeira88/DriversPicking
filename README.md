@@ -14,9 +14,12 @@ This project is intentionally open-ended. The goal of this project is to show th
 - Also, if selected, the driver will have a different image on the map to distinguish it from the other drivers.
 - The driver can be unselected by clicking in the car selected.
 - If a driver is not selected there will be an info view showing the current address, name (USER), image (placeholder) and date.
+- If the user drags to a position where is location is not visible it will appear a ```Re-center``` button that will recenter the users position to is current location.
 
 ## Screenshots
-<img src="launch.png" height="500px"> <img src="permission_screen.png" height="500px"> <img src="user_screen.png" height="500px"> <img src="driver_screen.png" height="500px">
+<img src="launch.png" height="500px"> <img src="permission_screen.png" height="500px"> <img src="user_screen.png" height="500px"> 
+
+<img src="driver_screen.png" height="500px"> <img src="recenter_screen.png" height="500px">
 
 ## Code
 
