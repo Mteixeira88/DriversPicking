@@ -13,6 +13,7 @@ This project is intentionally open-ended. The goal of this project is to show th
 - The app will refresh the drivers position every 5 seconds as well as the user positions if needed.
 - If a driver is selected, the app will have an info view showing the current address, name, image from the driver and the distance/time from the user location.
 - Also, if selected, the driver will have a different image on the map to distinguish it from the other drivers.
+- The driver can be unselected by clicking in the car selected.
 - If a driver is not selected there will be an info view showing the current address, name (USER), image (placeholder) and date.
 
 ## Screenshots
