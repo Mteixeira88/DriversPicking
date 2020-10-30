@@ -68,13 +68,10 @@ class MapViewModel: NSObject {
                     )
                 }
             }
-            .subscribe(onNext: { [weak self] drivers in
-                guard let self = self else {
-                    return
-                }
+            .subscribe(onNext: { [unowned self] drivers in
                 self.startDrivers(with: drivers)
-            }, onError: { [weak self ] error in
-                self?.drivers.onError(error)
+            }, onError: { [unowned self] error in
+                self.drivers.onError(error)
             })
             .disposed(by: disposeBag)
     }
@@ -83,8 +80,8 @@ class MapViewModel: NSObject {
         timerObs?.dispose()
         timerObs = Observable<Int>
             .interval(RxTimeInterval.seconds(5), scheduler: MainScheduler.instance)
-            .subscribe { [weak self ] _ in
-                self?.updateDriver()
+            .subscribe { [unowned self] _ in
+                self.updateDriver()
             }
         if let drivers = drivers {
             self.drivers.onNext(drivers)

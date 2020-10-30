@@ -10,6 +10,7 @@ enum Images: String {
     case locationPin = "location-pin"
     case sportCarSelected = "sport-car-selected"
     case sportCar = "sport-car"
+    case testImage = "test-image"
 }
 
 enum Assets {

@@ -3,9 +3,13 @@ import RxSwift
 import Contacts
 
 struct DriverViewModel {
+    // MARK: - Error enum
+    enum DriverViewModelError {
+        case noAddress(String)
+    }
+    
     // MARK: - Properties
-    static let imageCache = NSCache<AnyObject, AnyObject>()
-    static var address: String? = nil
+    static let imageCache = NSCache<NSString, UIImage>()
     
     private var driver: DriverModel
     
@@ -14,6 +18,8 @@ struct DriverViewModel {
     var displayName: String {
         return driver.name
     }
+    
+    let error = PublishSubject<DriverViewModelError>()
     
     // MARK: - Init
     init(
@@ -40,6 +46,7 @@ struct DriverViewModel {
                 let postalAddressFormatter = CNPostalAddressFormatter()
                 postalAddressFormatter.style = .mailingAddress
                 guard let postalAddress = place.postalAddress else {
+                    self.error.onNext(.noAddress("No address found"))
                     return
                 }
                 
@@ -47,27 +54,22 @@ struct DriverViewModel {
                 observer.onNext(address)
             }
             
-            return Disposables.create {}
+            return Disposables.create()
         }
     }
     
     
     func downloadImage() -> Observable<UIImage> {
         return Observable.create { (observer) -> Disposable in
-            
-            
-            
             guard let imageString = driver.image,
                 let url = URL(string: imageString) else {
                 observer.onNext(Assets.image(.locationPin))
                 return Disposables.create {
                 }
             }
-            
-            if let imageFromCache = DriverViewModel.imageCache.object(forKey: imageString as AnyObject),
-               let image = imageFromCache as? UIImage {
-                observer.onNext(image)
-                return Disposables.create {}
+            if let imageFromCache = DriverViewModel.imageCache.object(forKey: NSString(string: imageString)) {
+                observer.onNext(imageFromCache)
+                return Disposables.create()
             }
             
             URLSession.shared.dataTask(with: url, completionHandler: { (data, _, error) -> Void in
@@ -77,13 +79,12 @@ struct DriverViewModel {
                 }
                 if let data = data {
                     guard let imageToCache = UIImage(data: data) else { return }
-                    DriverViewModel.imageCache.setObject(imageToCache, forKey: driver.image as AnyObject)
+                    DriverViewModel.imageCache.setObject(imageToCache, forKey: NSString(string: imageString))
                     observer.onNext(imageToCache)
                 }
             }).resume()
             
-            return Disposables.create {
-            }
+            return Disposables.create()
         }
     }
     

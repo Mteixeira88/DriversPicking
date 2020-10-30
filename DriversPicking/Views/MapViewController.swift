@@ -4,7 +4,7 @@ import RxSwift
 import CoreLocation
 
 class MapViewController: UIViewController {
-
+    
     
     // MARK: - Properties
     private(set) var mapView: MKMapView = {
@@ -27,7 +27,7 @@ class MapViewController: UIViewController {
         button.alpha = 0
         button.setTitleColor(.white, for: .normal)
         button.layer.cornerRadius = 10
-        button.backgroundColor = .systemBlue
+        button.backgroundColor = .systemYellow
         button.setTitle("Re-center", for: .normal)
         
         return button
@@ -99,9 +99,9 @@ class MapViewController: UIViewController {
         viewModel?
             .drivers
             .observeOn(MainScheduler.instance)
-            .subscribe(onNext: { [weak self] drivers in
+            .subscribe(onNext: { [unowned self] drivers in
                 drivers.forEach { (driver) in
-                    self?.mapView.addAnnotation(driver.annotation)
+                    self.mapView.addAnnotation(driver.annotation)
                 }
             }, onError: { error in
                 print(error)
@@ -111,10 +111,7 @@ class MapViewController: UIViewController {
         viewModel?
             .presentedDriver
             .observeOn(MainScheduler.instance)
-            .subscribe(onNext: { [weak self]  driver in
-                guard let self = self else {
-                    return
-                }
+            .subscribe(onNext: { [unowned self]  driver in
                 if let driver = driver {
                     self.driverView.nameLabel.text = driver.displayName
                     driver
@@ -143,10 +140,7 @@ class MapViewController: UIViewController {
         buttonReCenter
             .rx
             .tap
-            .subscribe { [weak self] _ in
-                guard let self = self else {
-                    return
-                }
+            .subscribe { [unowned self] _ in
                 self.setRegion(from: self.currentLocationAnnotation.coordinate)
             }
             .disposed(by: disposeBag)
@@ -177,7 +171,9 @@ extension MapViewController: MapViewModelProtocol {
 extension MapViewController: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
         buttonReCenter.alpha =
-            mapView.visibleMapRect.contains(MKMapPoint(currentLocationAnnotation.coordinate))
+            mapView
+            .visibleMapRect
+            .contains(MKMapPoint(currentLocationAnnotation.coordinate))
             ? 0
             : 1
     }
@@ -212,25 +208,27 @@ extension MapViewController: MKMapViewDelegate {
                 reuseIdentifier: PinIdent.user.rawValue
             )
             pinView?.image = Assets.image(.locationPin)
-        } else {
-            if let ann = annotation as? DriverAnnotation {
-                if let selectedAnnotation = selectedAnnotation,
-                    ann.id == selectedAnnotation.id {
-                    pinView = MKAnnotationView(
-                        annotation: annotation,
-                        reuseIdentifier: PinIdent.driverSelected.rawValue
-                    )
-                    pinView?.image = Assets.image(.sportCarSelected)
-                } else {
-                    pinView = MKAnnotationView(
-                        annotation: annotation,
-                        reuseIdentifier: PinIdent.driver.rawValue
-                    )
-                    pinView?.image = Assets.image(.sportCar)
-                }
-            }
             
+            return pinView
         }
+        
+        if let ann = annotation as? DriverAnnotation {
+            if let selectedAnnotation = selectedAnnotation,
+               ann.id == selectedAnnotation.id {
+                pinView = MKAnnotationView(
+                    annotation: annotation,
+                    reuseIdentifier: PinIdent.driverSelected.rawValue
+                )
+                pinView?.image = Assets.image(.sportCarSelected)
+            } else {
+                pinView = MKAnnotationView(
+                    annotation: annotation,
+                    reuseIdentifier: PinIdent.driver.rawValue
+                )
+                pinView?.image = Assets.image(.sportCar)
+            }
+        }
+        
         return pinView
     }
 }

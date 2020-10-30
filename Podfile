@@ -9,4 +9,11 @@ target 'DriversPicking' do
   pod 'RxSwift'
   pod 'RxCocoa'
 
+  target 'DriversPickingTests' do
+    inherit! :search_paths
+    # Pods for testing
+    pod 'RxTest'
+    pod 'RxBlocking'
+  end
+
 end
