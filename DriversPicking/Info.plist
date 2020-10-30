@@ -55,7 +55,7 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
-	<key>SERVER_URL</key>
+	<key>Server_URL</key>
 	<string>$(SERVER_URL)</string>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>

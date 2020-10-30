@@ -27,7 +27,7 @@ class Utils {
     static func getServerUrl() -> URL {
         if let path = Bundle.main.path(forResource: "Info", ofType: "plist") {
             guard let nsDictionay = NSDictionary(contentsOfFile: path),
-                let serverString = nsDictionay["SERVER_URL"] as? String,
+                let serverString = nsDictionay["Server_URL"] as? String,
                 let url = URL(string: serverString) else {
                 fatalError("No URL to proceed")
             }
