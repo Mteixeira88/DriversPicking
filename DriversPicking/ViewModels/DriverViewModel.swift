@@ -9,9 +9,9 @@ struct DriverViewModel {
     }
     
     // MARK: - Properties
-    static let imageCache = NSCache<NSString, UIImage>()
-    
     private var driver: DriverModel
+
+    private var driverService: FoundDriverService
     
     var annotation: DriverAnnotation
     
@@ -24,10 +24,12 @@ struct DriverViewModel {
     // MARK: - Init
     init(
         driver: DriverModel,
-        annotation: DriverAnnotation
+        annotation: DriverAnnotation,
+        driverService: FoundDriverService = FoundDriverService()
     ) {
         self.driver = driver
         self.annotation = annotation
+        self.driverService = driverService
     }
     
     // MARK: - Setup
@@ -60,32 +62,7 @@ struct DriverViewModel {
     
     
     func downloadImage() -> Observable<UIImage> {
-        return Observable.create { (observer) -> Disposable in
-            guard let imageString = driver.image,
-                let url = URL(string: imageString) else {
-                observer.onNext(Assets.image(.locationPin))
-                return Disposables.create {
-                }
-            }
-            if let imageFromCache = DriverViewModel.imageCache.object(forKey: NSString(string: imageString)) {
-                observer.onNext(imageFromCache)
-                return Disposables.create()
-            }
-            
-            URLSession.shared.dataTask(with: url, completionHandler: { (data, _, error) -> Void in
-                if error != nil {
-                    observer.onNext(Assets.image(.locationPin))
-                    return
-                }
-                if let data = data {
-                    guard let imageToCache = UIImage(data: data) else { return }
-                    DriverViewModel.imageCache.setObject(imageToCache, forKey: NSString(string: imageString))
-                    observer.onNext(imageToCache)
-                }
-            }).resume()
-            
-            return Disposables.create()
-        }
+        return driverService.downloadImage(from: driver.image)
     }
     
     func getDirections(

@@ -24,6 +24,7 @@
 		70BF3D05253F375D00FD2789 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 70BF3D04253F375D00FD2789 /* Assets.xcassets */; };
 		70BF3D08253F375D00FD2789 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 70BF3D06253F375D00FD2789 /* LaunchScreen.storyboard */; };
 		70BF3D1B253F389000FD2789 /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70BF3D1A253F389000FD2789 /* AppCoordinator.swift */; };
+		70CF6C57254C2A7800D054E5 /* FoundDriverService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70CF6C56254C2A7800D054E5 /* FoundDriverService.swift */; };
 		92F7BAF027F3D1FEF5B791CD /* Pods_DriversPickingTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A81BA561C71EABB0C449EBF /* Pods_DriversPickingTests.framework */; };
 /* End PBXBuildFile section */
 
@@ -62,6 +63,7 @@
 		70BF3D07253F375D00FD2789 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		70BF3D09253F375D00FD2789 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		70BF3D1A253F389000FD2789 /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinator.swift; sourceTree = "<group>"; };
+		70CF6C56254C2A7800D054E5 /* FoundDriverService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoundDriverService.swift; sourceTree = "<group>"; };
 		7B4150E1A95ABFBA4C4E587B /* Pods-DriversPicking.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DriversPicking.release.xcconfig"; path = "Target Support Files/Pods-DriversPicking/Pods-DriversPicking.release.xcconfig"; sourceTree = "<group>"; };
 		C20730EB08E0E8F46308FD19 /* Pods-DriversPicking-DriversPickingTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DriversPicking-DriversPickingTests.release.xcconfig"; path = "Target Support Files/Pods-DriversPicking-DriversPickingTests/Pods-DriversPicking-DriversPickingTests.release.xcconfig"; sourceTree = "<group>"; };
 		CEFBB746878035530DF66A91 /* Pods-DriversPickingTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DriversPickingTests.debug.xcconfig"; path = "Target Support Files/Pods-DriversPickingTests/Pods-DriversPickingTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -136,6 +138,7 @@
 			isa = PBXGroup;
 			children = (
 				70B689D32549638F0022510F /* DriverService.swift */,
+				70CF6C56254C2A7800D054E5 /* FoundDriverService.swift */,
 			);
 			path = Networking;
 			sourceTree = "<group>";
@@ -198,10 +201,18 @@
 		70BF3D17253F383D00FD2789 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				70CF6C53254C273900D054E5 /* CustomViews */,
 				70BF3CFF253F375C00FD2789 /* MapViewController.swift */,
-				70019C8A2549B3CB001C1A0A /* DriverView.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		70CF6C53254C273900D054E5 /* CustomViews */ = {
+			isa = PBXGroup;
+			children = (
+				70019C8A2549B3CB001C1A0A /* DriverView.swift */,
+			);
+			path = CustomViews;
 			sourceTree = "<group>";
 		};
 		AA709CF01FE42F00F3ABA437 /* Frameworks */ = {
@@ -424,6 +435,7 @@
 				70B689D0254954B40022510F /* AnnotationClass.swift in Sources */,
 				70BF3D1B253F389000FD2789 /* AppCoordinator.swift in Sources */,
 				706B93BA253F3DB400AC6938 /* MapViewModel.swift in Sources */,
+				70CF6C57254C2A7800D054E5 /* FoundDriverService.swift in Sources */,
 				70BF3D00253F375C00FD2789 /* MapViewController.swift in Sources */,
 				70B689D42549638F0022510F /* DriverService.swift in Sources */,
 				70B6899F2548693E0022510F /* DriverModel.swift in Sources */,

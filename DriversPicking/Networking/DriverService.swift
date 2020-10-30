@@ -5,6 +5,8 @@ protocol DriverServiceProtocol {
 }
 
 class DriverService: DriverServiceProtocol {
+    static let imageCache = NSCache<NSString, UIImage>()
+    
     func fetchDrivers() -> Observable<[DriverModel]> {
         return Observable.create { observer -> Disposable in
             URLSession.shared.dataTask(
