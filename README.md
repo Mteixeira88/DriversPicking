@@ -8,7 +8,6 @@ This project is intentionally open-ended. The goal of this project is to show th
 
 - The user when entered for the first time it will be asked to use the current location, whem the app is in use.
 - All placemarks will be custom, one for the drivers and one for the user
-- The app will then fetch some drivers from https://sheetdb.io/api/v1/pc1ght2w5p69l.
 - The app will generate random Coordinates and position the drivers previously fetched in the map. The positions will always be near the user locations.
 - The app will refresh the drivers position every 5 seconds as well as the user positions if needed.
 - If a driver is selected, the app will have an info view showing the current address, name, image from the driver and the distance/time from the user location.
@@ -60,9 +59,10 @@ end
 
 ### API
 
-- To fetch the drivers this app uses https://sheetdb.io as database with https://docs.google.com/spreadsheets/d/1qU-g9jqvtvtKwrGT0LI5Zbpp_N1PWBsCF4FWk6nkv1k/edit?usp=sharing
-
-- The final API URL is https://sheetdb.io/api/v1/pc1ght2w5p69l (GET)
+- To fetch the drivers this app uses https://sheetdb.io as database.
+- For debug it uses https://docs.google.com/spreadsheets/d/1qU-g9jqvtvtKwrGT0LI5Zbpp_N1PWBsCF4FWk6nkv1k/edit?usp=sharing and final link https://sheetdb.io/api/v1/pc1ght2w5p69l
+- For release it uses https://docs.google.com/spreadsheets/d/1tjkHrK58WL-iSPeeBrA0MjjcTPhCccrXp8tmwbIM4hw/edit?usp=sharing and final link https://sheetdb.io/api/v1/s0r5i7rkd05p1
+- Both requests are GET.
 
 ```swift
 {
