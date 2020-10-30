@@ -20,12 +20,8 @@
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Need to get there</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Need really to get there</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Need you here man</string>
+	<string>Need this to create the random drivers.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
