@@ -647,6 +647,7 @@
 				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = org.miguelteixeira.DriversPicking;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SERVER_URL = "https://sheetdb.io/api/v1/pc1ght2w5p69l";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -671,6 +672,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "org.miguelteixeira.DriversPicking-release";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SERVER_URL = "https://sheetdb.io/api/v1/s0r5i7rkd05p1";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};

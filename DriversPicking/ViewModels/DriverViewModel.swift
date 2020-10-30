@@ -89,7 +89,7 @@ struct DriverViewModel {
                 })
             }
             
-            return Disposables.create{}
+            return Disposables.create()
         }
     }
 }

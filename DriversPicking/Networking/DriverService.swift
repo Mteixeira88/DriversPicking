@@ -10,7 +10,7 @@ class DriverService: DriverServiceProtocol {
     func fetchDrivers() -> Observable<[DriverModel]> {
         return Observable.create { observer -> Disposable in
             URLSession.shared.dataTask(
-                with:  URL(string: "https://sheetdb.io/api/v1/pc1ght2w5p69l")!,
+                with:  Utils.getServerUrl(),
                 completionHandler: { (data, _, error) -> Void in
                     if let error = error {
                         observer.onError(error)
