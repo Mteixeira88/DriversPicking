@@ -164,6 +164,7 @@ extension MapViewController: MapViewModelProtocol {
             return
         }
         setCurrentLocation(with: currentLocation)
+        buttonReCenter.alpha = 0
     }
 }
 
